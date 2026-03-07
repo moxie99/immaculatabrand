@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { MediaType } from '@/types/media.types';
 import { useMediaUpload } from '@/lib/hooks/useMediaUpload';
 import { Button } from '@/components/ui/button';
@@ -70,22 +70,34 @@ export function ImageUploader({
   } = useMediaUpload();
 
   /**
-   * Handle file selection
+   * Clean up preview URL on unmount
    */
-  const handleFileSelect = useCallback((file: File) => {
-    setSelectedFile(file);
-    
-    // Create preview URL
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    
-    // Clean up previous preview
+  useEffect(() => {
     return () => {
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
     };
   }, [previewUrl]);
+
+  /**
+   * Handle file selection
+   */
+  const handleFileSelect = useCallback((file: File) => {
+    // Clean up previous preview URL if it exists
+    setPreviewUrl((prevUrl) => {
+      if (prevUrl) {
+        URL.revokeObjectURL(prevUrl);
+      }
+      return null;
+    });
+    
+    setSelectedFile(file);
+    
+    // Create new preview URL
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+  }, []);
 
   /**
    * Handle file input change
@@ -227,6 +239,10 @@ export function ImageUploader({
                   src={previewUrl}
                   alt="Preview"
                   className="w-full h-auto rounded-lg shadow-md"
+                  onError={(e) => {
+                    console.error('Failed to load preview image');
+                    e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23ddd" width="400" height="300"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EImage Preview%3C/text%3E%3C/svg%3E';
+                  }}
                 />
                 <Button
                   type="button"

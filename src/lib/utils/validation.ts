@@ -205,11 +205,13 @@ export const paginationSchema = z.object({
 });
 
 // Product filter params
-export const productFilterSchema = paginationSchema.extend({
-  category: categorySchema.optional(),
-  featured: z.coerce.boolean().optional(),
-  active: z.coerce.boolean().optional(),
-  search: z.string().trim().optional(),
+export const productFilterSchema = z.object({
+  page: z.string().nullable().optional().transform(val => val ? parseInt(val, 10) : 1).pipe(z.number().int().positive().default(1)),
+  limit: z.string().nullable().optional().transform(val => val ? parseInt(val, 10) : 20).pipe(z.number().int().positive().max(100).default(20)),
+  category: z.string().nullable().optional().transform(val => val || undefined).pipe(categorySchema.optional()),
+  featured: z.string().nullable().optional().transform(val => val === 'true' ? true : val === 'false' ? false : undefined).pipe(z.boolean().optional()),
+  active: z.string().nullable().optional().transform(val => val === 'true' ? true : val === 'false' ? false : undefined).pipe(z.boolean().optional()),
+  search: z.string().nullable().optional().transform(val => val || undefined).pipe(z.string().trim().optional()),
 });
 
 // Order filter params

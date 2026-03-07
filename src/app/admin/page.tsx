@@ -32,10 +32,13 @@ export default function AdminDashboardPage() {
         const result = await response.json();
         
         if (response.ok && result.data) {
-          setRecentOrders(result.data.orders);
+          setRecentOrders(result.data.orders || []);
+        } else {
+          setRecentOrders([]);
         }
       } catch (error) {
         console.error('Failed to fetch recent orders:', error);
+        setRecentOrders([]);
       } finally {
         setIsLoading(false);
       }
@@ -96,7 +99,7 @@ export default function AdminDashboardPage() {
             <div className="text-center py-8 text-muted-foreground">
               Loading orders...
             </div>
-          ) : recentOrders.length === 0 ? (
+          ) : !recentOrders || recentOrders.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               No orders yet
             </div>

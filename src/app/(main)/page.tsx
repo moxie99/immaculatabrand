@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import HeroSection from '@/components/home/HeroSection';
 import ImageCarousel from '@/components/home/ImageCarousel';
+import CakesAndPastries from '@/components/home/CakesAndPastries';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
 
 /**
@@ -37,20 +38,23 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="w-full">
+      {/* Hero Section - White background */}
+      <section className="w-full bg-white">
         <HeroSection />
       </section>
 
-      {/* Image Carousel */}
-      <section className="w-full py-12 px-4 md:px-8">
+      {/* Cakes and Pastries Section - Light warm beige */}
+      <CakesAndPastries />
+
+      {/* Image Carousel - White background for contrast */}
+      <section className="w-full py-12 px-4 md:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <ImageCarousel />
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="w-full">
+      {/* Featured Products - Warm orange tint background */}
+      <section className="w-full bg-gradient-to-b from-orange-50/50 to-white">
         <FeaturedProducts />
       </section>
     </main>

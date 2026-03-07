@@ -50,9 +50,9 @@ export default function ImageCarousel() {
   // Reset autoplay plugin on mount to ensure proper initialization
   React.useEffect(() => {
     return () => {
-      // Cleanup on unmount
-      if (autoplayPlugin.current && typeof autoplayPlugin.current.destroy === 'function') {
-        autoplayPlugin.current.destroy();
+      // Cleanup on unmount - stop autoplay
+      if (autoplayPlugin.current && typeof autoplayPlugin.current.stop === 'function') {
+        autoplayPlugin.current.stop();
       }
     };
   }, []);

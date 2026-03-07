@@ -45,9 +45,9 @@ export default function ProductsPage() {
         const response = await fetch(`/api/products?${params.toString()}`);
         const result = await response.json();
 
-        if (response.ok && result.data) {
-          setProducts(result.data.products);
-          setTotalPages(result.data.totalPages || 1);
+        if (response.ok && result.success && result.data) {
+          setProducts(result.data);
+          setTotalPages(result.pagination?.totalPages || 1);
         }
       } catch (error) {
         console.error('Failed to fetch products:', error);
@@ -66,7 +66,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <main className="min-h-screen py-12 px-4 md:px-8">
+    <main className="min-h-screen py-12 px-4 md:px-8 section-bg-cream">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
@@ -95,7 +95,7 @@ export default function ProductsPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted"
+              className="px-4 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white bg-white transition-colors"
             >
               Previous
             </button>
@@ -105,7 +105,7 @@ export default function ProductsPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted"
+              className="px-4 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white bg-white transition-colors"
             >
               Next
             </button>

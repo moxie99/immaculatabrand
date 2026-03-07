@@ -59,10 +59,13 @@ export default function ProductsManagementPage() {
       const result = await response.json();
 
       if (response.ok && result.data) {
-        setProducts(result.data.products);
+        setProducts(result.data || []);
+      } else {
+        setProducts([]);
       }
     } catch (error) {
       console.error('Failed to fetch products:', error);
+      setProducts([]);
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +94,7 @@ export default function ProductsManagementPage() {
   };
 
   // Filter products by search query
-  const filteredProducts = products.filter((product) =>
+  const filteredProducts = (products || []).filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

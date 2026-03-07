@@ -252,18 +252,30 @@ export function ProductForm({ product, onSubmit, isLoading = false }: ProductFor
           <h2 className="text-lg font-semibold mb-4">Product Image</h2>
           
           <div className="space-y-4">
-            <div>
-              <Label>Upload Image</Label>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="mt-2"
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                Note: Full image upload functionality will be available after ImageUploader component is implemented
-              </p>
-            </div>
+            <FormField
+              control={form.control}
+              name="images"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://res.cloudinary.com/..."
+                      value={field.value?.[0] || ''}
+                      onChange={(e) => {
+                        const url = e.target.value;
+                        field.onChange(url ? [url] : []);
+                        setImagePreview(url || null);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Upload images via the Media page (/admin/media) and paste the URL here
+                  </p>
+                </FormItem>
+              )}
+            />
 
             {imagePreview && (
               <div className="mt-4">

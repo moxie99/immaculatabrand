@@ -183,8 +183,14 @@ export function useMediaUpload(): UseMediaUploadReturn {
         });
       });
 
-      // Send request
+      // Send request with Basic Auth
       xhr.open('POST', '/api/media/upload');
+      
+      // Add admin authentication header
+      const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+      xhr.setRequestHeader('Authorization', `Basic ${btoa(`${adminUsername}:${adminPassword}`)}`);
+      
       xhr.send(formData);
 
       // Wait for upload to complete

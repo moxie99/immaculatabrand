@@ -20,15 +20,30 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-// Form schema
-const contentFormSchema = z.object({
+// Homepage Hero form schema
+const homepageHeroSchema = z.object({
   key: z.string().min(1, 'Content key is required'),
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
-  data: z.string().min(1, 'Content data is required'),
+  heading: z.string().min(1, 'Heading is required'),
+  subheading: z.string().min(1, 'Subheading is required'),
+  ctaText: z.string().min(1, 'CTA text is required'),
+  ctaLink: z.string().min(1, 'CTA link is required'),
 });
 
-type FormValues = z.infer<typeof contentFormSchema>;
+// About Page form schema
+const aboutPageSchema = z.object({
+  key: z.string().min(1, 'Content key is required'),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  story: z.string().min(1, 'Story is required'),
+  mission: z.string().min(1, 'Mission is required'),
+  values: z.string().min(1, 'Values are required'),
+});
+
+type HomepageHeroFormValues = z.infer<typeof homepageHeroSchema>;
+type AboutPageFormValues = z.infer<typeof aboutPageSchema>;
+type FormValues = HomepageHeroFormValues | AboutPageFormValues;
 
 interface ContentEditorProps {
   contentKey: string;

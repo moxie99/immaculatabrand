@@ -98,14 +98,16 @@ export default function OrderTable({ className = '' }: OrderTableProps) {
       const data: PaginatedResponse<Order> = await response.json();
 
       if (data.success) {
-        setOrders(data.data);
+        setOrders(data.data || []);
         setTotalPages(data.pagination.totalPages);
         setTotal(data.pagination.total);
       } else {
         throw new Error(data.error?.message || 'Failed to fetch orders');
       }
     } catch (err) {
+      // Only set error for actual failures, not empty results
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
