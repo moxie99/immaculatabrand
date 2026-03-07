@@ -55,14 +55,30 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
   const [error, setError] = useState<string | null>(null);
   const { success, error: showError } = useToast();
 
+  // Determine schema based on content key
+  const isHomepageHero = contentKey === 'homepage_hero';
+  const schema = isHomepageHero ? homepageHeroSchema : aboutPageSchema;
+
   const form = useForm<FormValues>({
-    resolver: zodResolver(contentFormSchema),
-    defaultValues: {
-      key: contentKey,
-      title: '',
-      description: '',
-      data: '',
-    },
+    resolver: zodResolver(schema),
+    defaultValues: isHomepageHero
+      ? {
+          key: contentKey,
+          title: '',
+          description: '',
+          heading: '',
+          subheading: '',
+          ctaText: '',
+          ctaLink: '',
+        }
+      : {
+          key: contentKey,
+          title: '',
+          description: '',
+          story: '',
+          mission: '',
+          values: '',
+        },
   });
 
   // Fetch content on mount
@@ -81,12 +97,30 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
 
         if (result.success && result.data) {
           const content = result.data as Content;
-          form.reset({
-            key: content.key,
-            title: content.title,
-            description: content.description || '',
-            data: JSON.stringify(content.data, null, 2),
-          });
+          
+          // Parse data based on content type
+          if (contentKey === 'homepage_hero') {
+            const data = content.data as any;
+            form.reset({
+              key: content.key,
+              title: content.title,
+              description: content.description || '',
+              heading: data.heading || '',
+              subheading: data.subheading || '',
+              ctaText: data.ctaText || '',
+              ctaLink: data.ctaLink || '',
+            });
+          } else if (contentKey === 'about_page') {
+            const data = content.data as any;
+            form.reset({
+              key: content.key,
+              title: content.title,
+              description: content.description || '',
+              story: data.story || '',
+              mission: data.mission || '',
+              values: Array.isArray(data.values) ? data.values.join('\n') : '',
+            });
+          }
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to fetch content';
@@ -106,15 +140,29 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
     setError(null);
 
     try {
-      // Parse JSON data
+      // Convert form values to API format
       let parsedData: Record<string, any>;
-      try {
-        parsedData = JSON.parse(values.data);
-      } catch (parseError) {
-        throw new Error('Invalid JSON format in data field');
+      
+      if (contentKey === 'homepage_hero') {
+        const heroValues = values as HomepageHeroFormValues;
+        parsedData = {
+          heading: heroValues.heading,
+          subheading: heroValues.subheading,
+          ctaText: heroValues.ctaText,
+          ctaLink: heroValues.ctaLink,
+        };
+      } else if (contentKey === 'about_page') {
+        const aboutValues = values as AboutPageFormValues;
+        parsedData = {
+          story: aboutValues.story,
+          mission: aboutValues.mission,
+          values: aboutValues.values.split('\n').filter(v => v.trim() !== ''),
+        };
+      } else {
+        throw new Error('Unknown content type');
       }
 
-      // Get Basic Auth credentials from environment or prompt
+      // Get Basic Auth credentials from environment
       const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
       const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin';
       const credentials = btoa(`${username}:${password}`);
@@ -230,26 +278,150 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="data"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Content Data (JSON)</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder='{"key": "value"}'
-                    className="min-h-[200px] font-mono text-sm"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Enter content data as valid JSON. This field supports flexible content structures.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Homepage Hero Fields */}
+          {contentKey === 'homepage_hero' && (
+            <>
+              <FormField
+                control={form.control}
+                name="heading"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Heading</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter main heading" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      The main headline displayed on the homepage
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="subheading"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subheading</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter subheading text"
+                        className="min-h-[80px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Supporting text below the main heading
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="ctaText"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Call-to-Action Text</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Shop Now" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Text displayed on the button
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="ctaLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Call-to-Action Link</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., /products" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      URL where the button should navigate
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
+
+          {/* About Page Fields */}
+          {contentKey === 'about_page' && (
+            <>
+              <FormField
+                control={form.control}
+                name="story"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Our Story</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tell your bakery's story"
+                        className="min-h-[120px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Share the history and background of your bakery
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="mission"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Our Mission</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe your mission"
+                        className="min-h-[120px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      What drives your bakery and what you aim to achieve
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="values"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Our Values</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter one value per line"
+                        className="min-h-[120px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      List your core values, one per line (e.g., Quality, Authenticity, Community)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
 
           <div className="flex justify-end gap-4">
             <Button

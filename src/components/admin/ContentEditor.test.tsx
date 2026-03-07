@@ -23,6 +23,8 @@ describe('ContentEditor', () => {
     data: {
       heading: 'Welcome',
       subheading: 'To our site',
+      ctaText: 'Shop Now',
+      ctaLink: '/products',
     },
     updatedAt: new Date(),
   };
@@ -60,10 +62,14 @@ describe('ContentEditor', () => {
     const keyInput = screen.getByDisplayValue('homepage_hero') as HTMLInputElement;
     const titleInput = screen.getByDisplayValue('Homepage Hero') as HTMLInputElement;
     const descInput = screen.getByDisplayValue('Hero section content') as HTMLTextAreaElement;
+    const headingInput = screen.getByDisplayValue('Welcome') as HTMLInputElement;
+    const subheadingInput = screen.getByDisplayValue('To our site') as HTMLTextAreaElement;
 
     expect(keyInput).toBeDefined();
     expect(titleInput).toBeDefined();
     expect(descInput).toBeDefined();
+    expect(headingInput).toBeDefined();
+    expect(subheadingInput).toBeDefined();
   });
 
   it('displays error when fetch fails', async () => {
@@ -166,14 +172,15 @@ describe('ContentEditor', () => {
       expect(heading).toBeDefined();
     });
 
-    const dataTextarea = screen.getByRole('textbox', { name: /content data/i }) as HTMLTextAreaElement;
-    fireEvent.change(dataTextarea, { target: { value: 'invalid json' } });
+    // Clear required field to trigger validation error
+    const headingInput = screen.getByDisplayValue('Welcome') as HTMLInputElement;
+    fireEvent.change(headingInput, { target: { value: '' } });
 
     const saveButton = screen.getByRole('button', { name: /save changes/i });
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      const errorText = screen.getByText(/invalid json format/i);
+      const errorText = screen.getByText(/heading is required/i);
       expect(errorText).toBeDefined();
     });
   });
@@ -245,30 +252,51 @@ describe('ContentEditor', () => {
     });
 
     const uniqueIdText = screen.getByText(/unique identifier for this content/i);
-    const jsonText = screen.getByText(/enter content data as valid json/i);
+    const headingText = screen.getByText(/the main headline displayed on the homepage/i);
 
     expect(uniqueIdText).toBeDefined();
-    expect(jsonText).toBeDefined();
+    expect(headingText).toBeDefined();
   });
 
   it('formats JSON data with proper indentation', async () => {
+    const mockAboutContent = {
+      _id: '2',
+      key: 'about_page',
+      title: 'About Page',
+      description: 'About page content',
+      data: {
+        story: 'Our story',
+        mission: 'Our mission',
+        values: ['Quality', 'Authenticity', 'Community'],
+      },
+      updatedAt: new Date(),
+    };
+
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         success: true,
-        data: mockContent,
+        data: mockAboutContent,
       }),
     });
 
-    render(<ContentEditor contentKey="homepage_hero" />);
+    render(<ContentEditor contentKey="about_page" />);
 
     await waitFor(() => {
       const heading = screen.getByText('Edit Content');
       expect(heading).toBeDefined();
     });
 
-    const dataTextarea = screen.getByRole('textbox', { name: /content data/i }) as HTMLTextAreaElement;
-    const formattedJson = JSON.stringify(mockContent.data, null, 2);
-    expect(dataTextarea.value).toBe(formattedJson);
+    const storyTextarea = screen.getByDisplayValue('Our story') as HTMLTextAreaElement;
+    const missionTextarea = screen.getByDisplayValue('Our mission') as HTMLTextAreaElement;
+    
+    // Check that values textarea contains the expected values
+    const valuesTextarea = screen.getByPlaceholderText('Enter one value per line') as HTMLTextAreaElement;
+    expect(valuesTextarea.value).toContain('Quality');
+    expect(valuesTextarea.value).toContain('Authenticity');
+    expect(valuesTextarea.value).toContain('Community');
+    
+    expect(storyTextarea).toBeDefined();
+    expect(missionTextarea).toBeDefined();
   });
 });
