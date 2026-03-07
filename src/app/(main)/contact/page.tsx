@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -103,15 +102,6 @@ export default function ContactPage() {
   }, []);
 
   // Generate Google Maps embed URL from address
-  const getMapUrl = () => {
-    if (!contactInfo) return '';
-    
-    const { street, city, state, postalCode, country } = contactInfo.address;
-    const fullAddress = `${street}, ${city}, ${state} ${postalCode}, ${country}`;
-    const encodedAddress = encodeURIComponent(fullAddress);
-    
-    return `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodedAddress}`;
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
