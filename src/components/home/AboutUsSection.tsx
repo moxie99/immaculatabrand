@@ -37,11 +37,17 @@ export default function AboutUsSection() {
   );
   const [isLoading, setIsLoading] = useState(true);
 
-  const autoplayPlugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: false })
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    [Autoplay({ delay: 4000, stopOnInteraction: false })]
   );
 
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [autoplayPlugin.current]);
+  // Ensure autoplay starts
+  useEffect(() => {
+    if (emblaApi && carouselImages.length > 0) {
+      emblaApi.reInit();
+    }
+  }, [emblaApi, carouselImages]);
 
   useEffect(() => {
     async function fetchData() {
@@ -104,30 +110,30 @@ export default function AboutUsSection() {
               <div className="aspect-[4/3] bg-slate-600 animate-pulse rounded-lg" />
             ) : (
               <Carousel
-                ref={emblaRef}
+                className="w-full"
                 opts={{
                   align: 'start',
                   loop: true,
                 }}
-                plugins={[autoplayPlugin.current]}
-                className="w-full"
               >
-                <CarouselContent>
-                  {carouselImages.map((image) => (
-                    <CarouselItem key={image._id}>
-                      <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-2xl">
-                        <Image
-                          src={image.url}
-                          alt={image.altText || 'Company image'}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 100vw, 50vw"
-                          priority
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
+                <div ref={emblaRef} className="overflow-hidden">
+                  <CarouselContent>
+                    {carouselImages.map((image) => (
+                      <CarouselItem key={image._id}>
+                        <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-2xl">
+                          <Image
+                            src={image.url}
+                            alt={image.altText || 'Company image'}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            priority
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </div>
               </Carousel>
             )}
           </div>

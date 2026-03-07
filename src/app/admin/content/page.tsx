@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { SimpleContentEditor } from '@/components/admin/SimpleContentEditor';
+import { ContactInfoEditor } from '@/components/admin/ContactInfoEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 
@@ -19,7 +20,7 @@ import { Card } from '@/components/ui/card';
  */
 
 export default function ContentManagementPage() {
-  const [activeTab, setActiveTab] = useState('homepage_hero');
+  const [activeTab, setActiveTab] = useState('contact_info');
 
   return (
     <div className="space-y-6">
@@ -34,6 +35,7 @@ export default function ContentManagementPage() {
       {/* Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
+          <TabsTrigger value="contact_info">Contact Info</TabsTrigger>
           <TabsTrigger value="homepage_hero">Homepage Hero</TabsTrigger>
           <TabsTrigger value="about_section">About Section</TabsTrigger>
           <TabsTrigger value="featured_section">Featured Section</TabsTrigger>
@@ -43,6 +45,18 @@ export default function ContentManagementPage() {
           <TabsTrigger value="carousel">Carousel Images</TabsTrigger>
           <TabsTrigger value="about_page">About Page</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="contact_info" className="mt-6">
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-semibold">Contact Information</h2>
+              <p className="text-muted-foreground mt-1">
+                Manage business address, email, and phone numbers used across the site
+              </p>
+            </div>
+            <ContactInfoEditor />
+          </div>
+        </TabsContent>
 
         <TabsContent value="homepage_hero" className="mt-6">
           <ContentEditor contentKey="homepage_hero" />
