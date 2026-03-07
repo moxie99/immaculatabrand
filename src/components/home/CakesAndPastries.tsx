@@ -74,13 +74,13 @@ export default function CakesAndPastries() {
   // Loading state
   if (isLoading) {
     return (
-      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-amber-50/80 to-orange-50/50">
+      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-br from-amber-900 via-orange-900 to-amber-900">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {title}
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-amber-100">
               Loading delicious treats...
             </p>
           </div>
@@ -103,12 +103,12 @@ export default function CakesAndPastries() {
   // Empty state
   if (products.length === 0) {
     return (
-      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-amber-50/80 to-orange-50/50">
+      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-br from-amber-900 via-orange-900 to-amber-900">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {title}
           </h2>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-lg text-amber-100 mb-8">
             {subtitle}
           </p>
         </div>
@@ -117,14 +117,14 @@ export default function CakesAndPastries() {
   }
 
   return (
-    <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-amber-50/80 to-orange-50/50">
+    <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-br from-amber-900 via-orange-900 to-amber-900">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {title}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-amber-100 max-w-2xl mx-auto">
             {subtitle}
           </p>
         </div>
@@ -187,7 +187,7 @@ export default function CakesAndPastries() {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button asChild size="lg" className="bg-white hover:bg-gray-50 text-primary border-2 border-primary/20 shadow-md hover:shadow-lg transition-all">
+          <Button asChild size="lg" className="bg-white hover:bg-amber-50 text-amber-900 border-2 border-white/20 shadow-md hover:shadow-lg transition-all">
             <Link href="/products?category=confectionary">
               View All Products
             </Link>

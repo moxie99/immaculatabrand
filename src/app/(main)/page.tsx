@@ -44,29 +44,27 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="min-h-screen">
-      {/* Hero Section - White background */}
+      {/* Hero Section - Light */}
       <section className="w-full bg-white">
         <HeroSection />
       </section>
 
-      {/* About Us Section - Dark background with carousel and biography */}
+      {/* About Us Section - Dark */}
       <AboutUsSection />
 
-       {/* Featured Products - Warm orange tint background */}
-      <section className="w-full bg-gradient-to-b from-orange-50/50 to-white">
+      {/* Featured Products - Light */}
+      <section className="w-full bg-gradient-to-b from-amber-50/50 to-orange-50/30">
         <FeaturedProducts />
       </section>
 
-      {/* Cakes and Pastries Section - Light warm beige */}
+      {/* Cakes and Pastries Section - Dark */}
       <CakesAndPastries />
 
-      {/* Foodstuffs Section - Light green */}
+      {/* Foodstuffs Section - Light */}
       <FoodstuffsSection />
 
-      {/* Fish Section - Light blue */}
+      {/* Fish Section - Dark */}
       <FishSection />
-
-     
     </main>
   );
 }

@@ -75,13 +75,13 @@ export default function FishSection() {
   // Loading state
   if (isLoading) {
     return (
-      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-blue-50/60 to-cyan-50/40">
+      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-br from-blue-900 via-cyan-900 to-blue-900">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {title}
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-cyan-100">
               Loading fresh fish selection...
             </p>
           </div>
@@ -104,12 +104,12 @@ export default function FishSection() {
   // Empty state
   if (products.length === 0) {
     return (
-      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-blue-50/60 to-cyan-50/40">
+      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-br from-blue-900 via-cyan-900 to-blue-900">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {title}
           </h2>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-lg text-cyan-100 mb-8">
             {subtitle}
           </p>
         </div>
@@ -118,14 +118,14 @@ export default function FishSection() {
   }
 
   return (
-    <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-blue-50/60 to-cyan-50/40">
+    <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-br from-blue-900 via-cyan-900 to-blue-900">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {title}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-cyan-100 max-w-2xl mx-auto">
             {subtitle}
           </p>
         </div>
@@ -188,7 +188,7 @@ export default function FishSection() {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button asChild size="lg" className="bg-white hover:bg-gray-50 text-primary border-2 border-primary/20 shadow-md hover:shadow-lg transition-all">
+          <Button asChild size="lg" className="bg-white hover:bg-cyan-50 text-blue-900 border-2 border-white/20 shadow-md hover:shadow-lg transition-all">
             <Link href="/products?category=fish">
               View All Fish Products
             </Link>
