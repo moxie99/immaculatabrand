@@ -8,23 +8,24 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Product } from '@/types/product.types';
 
 /**
- * CakesAndPastries Component
+ * FoodstuffsSection Component
  * 
- * Displays a curated selection of confectionary products (cakes, pastries, bread)
+ * Displays a curated selection of foodstuffs products
  * on the homepage with a grid layout.
  * 
  * Features:
- * - Fetches confectionary category products
+ * - Fetches foodstuffs category products
  * - Displays up to 6 products in a grid
  * - Product cards with image, name, price, and "Discover More" button
  * - "View All Products" button to navigate to products page
  * - Responsive design (1 column mobile, 2 columns tablet, 3 columns desktop)
+ * - Dynamic title and subtitle from Content API
  */
-export default function CakesAndPastries() {
+export default function FoodstuffsSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [title, setTitle] = useState('Our Cakes and Pastries');
-  const [subtitle, setSubtitle] = useState('Discover our authentic African confectioneries, from traditional cakes to freshly baked pastries and bread');
+  const [title, setTitle] = useState('Premium Foodstuffs');
+  const [subtitle, setSubtitle] = useState('Explore our selection of authentic African foodstuffs and ingredients');
 
   useEffect(() => {
     async function fetchData() {
@@ -33,9 +34,9 @@ export default function CakesAndPastries() {
         
         // Fetch content for section title and subtitle
         const [titleResponse, subtitleResponse, productsResponse] = await Promise.all([
-          fetch('/api/content?key=cakes_section_title'),
-          fetch('/api/content?key=cakes_section_subtitle'),
-          fetch('/api/products?category=confectionary&limit=6&active=true')
+          fetch('/api/content?key=foodstuffs_section_title'),
+          fetch('/api/content?key=foodstuffs_section_subtitle'),
+          fetch('/api/products?category=foodstuffs&limit=6&active=true')
         ]);
         
         // Process title
@@ -62,7 +63,7 @@ export default function CakesAndPastries() {
           }
         }
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        console.error('Failed to fetch foodstuffs data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -74,23 +75,23 @@ export default function CakesAndPastries() {
   // Loading state
   if (isLoading) {
     return (
-      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-amber-50/80 to-orange-50/50">
+      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-green-50/60 to-emerald-50/40">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               {title}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Loading delicious treats...
+              Loading premium foodstuffs...
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
               <Card key={i} className="overflow-hidden bg-white">
-                <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 animate-pulse" />
+                <div className="aspect-square bg-gradient-to-br from-green-100 to-emerald-100 animate-pulse" />
                 <CardContent className="p-4">
-                  <div className="h-6 bg-amber-100 animate-pulse rounded mb-2" />
-                  <div className="h-4 bg-amber-100 animate-pulse rounded w-1/2" />
+                  <div className="h-6 bg-green-100 animate-pulse rounded mb-2" />
+                  <div className="h-4 bg-green-100 animate-pulse rounded w-1/2" />
                 </CardContent>
               </Card>
             ))}
@@ -103,7 +104,7 @@ export default function CakesAndPastries() {
   // Empty state
   if (products.length === 0) {
     return (
-      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-amber-50/80 to-orange-50/50">
+      <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-green-50/60 to-emerald-50/40">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {title}
@@ -117,7 +118,7 @@ export default function CakesAndPastries() {
   }
 
   return (
-    <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-amber-50/80 to-orange-50/50">
+    <section className="w-full py-16 px-4 md:px-8 bg-gradient-to-b from-green-50/60 to-emerald-50/40">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -132,7 +133,7 @@ export default function CakesAndPastries() {
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {products.map((product) => (
-            <Card key={product._id} className="overflow-hidden hover:shadow-xl transition-all duration-300 bg-white border-amber-100">
+            <Card key={product._id} className="overflow-hidden hover:shadow-xl transition-all duration-300 bg-white border-green-100">
               {/* Product Image */}
               <div className="relative aspect-square bg-muted">
                 {product.images && product.images.length > 0 ? (
@@ -144,7 +145,7 @@ export default function CakesAndPastries() {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-gradient-to-br from-amber-50 to-orange-50">
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-gradient-to-br from-green-50 to-emerald-50">
                     <svg
                       className="w-16 h-16"
                       fill="none"
@@ -188,8 +189,8 @@ export default function CakesAndPastries() {
         {/* View All Button */}
         <div className="text-center">
           <Button asChild size="lg" className="bg-white hover:bg-gray-50 text-primary border-2 border-primary/20 shadow-md hover:shadow-lg transition-all">
-            <Link href="/products?category=confectionary">
-              View All Products
+            <Link href="/products?category=foodstuffs">
+              View All Foodstuffs
             </Link>
           </Button>
         </div>

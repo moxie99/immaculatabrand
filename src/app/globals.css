@@ -4,50 +4,62 @@
 
 @layer base {
   :root {
-    /* Warm bakery color scheme - Light mode */
-    --background: 30 20% 98%;
-    --foreground: 25 25% 15%;
+    /* Fresh food startup color scheme - Light mode */
+    /* Green (#22C55E) → freshness / ingredients */
+    /* Orange (#FB923C) → appetite stimulation */
+    /* Yellow (#FACC15) → sweetness & desserts */
+    /* Cream backgrounds → makes food photography pop */
+    
+    --background: 30 100% 97%; /* #FFF7ED - Cream background */
+    --foreground: 20 30% 15%; /* #2D1F1A - Dark brown text */
     --card: 0 0% 100%;
-    --card-foreground: 25 25% 15%;
+    --card-foreground: 20 30% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 25 25% 15%;
-    --primary: 25 85% 55%;
+    --popover-foreground: 20 30% 15%;
+    --primary: 142 71% 45%; /* #22C55E - Fresh green */
     --primary-foreground: 0 0% 100%;
-    --secondary: 30 40% 92%;
-    --secondary-foreground: 25 25% 15%;
-    --muted: 30 30% 94%;
-    --muted-foreground: 25 15% 45%;
-    --accent: 35 90% 60%;
+    --secondary: 142 76% 96%; /* #F0FDF4 - Soft green background */
+    --secondary-foreground: 20 30% 15%;
+    --muted: 30 100% 95%; /* Light cream */
+    --muted-foreground: 20 20% 35%; /* #6B4F46 - Secondary text */
+    --accent: 25 95% 61%; /* #FB923C - Orange accent */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 30 20% 88%;
-    --input: 30 20% 88%;
-    --ring: 25 85% 55%;
+    --border: 30 40% 90%;
+    --input: 30 40% 90%;
+    --ring: 142 71% 45%; /* Green ring */
     --radius: 0.5rem;
+    
+    /* Custom food palette variables */
+    --color-primary: 142 71% 45%; /* #22C55E */
+    --color-primary-dark: 142 67% 29%; /* #15803D */
+    --color-accent-orange: 25 95% 61%; /* #FB923C */
+    --color-accent-orange-dark: 20 91% 48%; /* #EA580C */
+    --color-accent-yellow: 45 93% 54%; /* #FACC15 */
   }
 
   .dark {
-    /* Dark mode - keeping it subtle and warm */
-    --background: 25 20% 10%;
-    --foreground: 30 20% 95%;
-    --card: 25 20% 12%;
-    --card-foreground: 30 20% 95%;
-    --popover: 25 20% 12%;
-    --popover-foreground: 30 20% 95%;
-    --primary: 25 85% 55%;
+    /* Dark mode - maintaining the fresh food aesthetic */
+    --background: 20 30% 10%;
+    --foreground: 30 100% 95%;
+    --card: 20 30% 12%;
+    --card-foreground: 30 100% 95%;
+    --popover: 20 30% 12%;
+    --popover-foreground: 30 100% 95%;
+    --primary: 142 71% 45%; /* Keep green vibrant in dark mode */
     --primary-foreground: 0 0% 100%;
-    --secondary: 25 15% 18%;
-    --secondary-foreground: 30 20% 95%;
-    --muted: 25 15% 18%;
-    --muted-foreground: 30 15% 60%;
-    --accent: 35 90% 60%;
+    --secondary: 142 40% 15%;
+    --secondary-foreground: 30 100% 95%;
+    --muted: 20 20% 18%;
+    --muted-foreground: 20 15% 60%;
+    --accent: 25 95% 61%; /* Orange accent */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 25 15% 20%;
-    --input: 25 15% 20%;
-    --ring: 25 85% 55%;
+    --border: 20 20% 20%;
+    --input: 20 20% 20%;
+    --ring: 142 71% 45%;
   }
 }
 
@@ -153,6 +165,55 @@
   
   .bg-gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+  }
+  
+  /* Food palette utilities */
+  .bg-green-fresh {
+    background-color: #22C55E;
+  }
+  
+  .bg-green-dark {
+    background-color: #15803D;
+  }
+  
+  .bg-orange-accent {
+    background-color: #FB923C;
+  }
+  
+  .bg-orange-dark {
+    background-color: #EA580C;
+  }
+  
+  .bg-yellow-sweet {
+    background-color: #FACC15;
+  }
+  
+  .bg-cream-main {
+    background-color: #FFF7ED;
+  }
+  
+  .bg-cream-soft {
+    background-color: #F0FDF4;
+  }
+  
+  .text-green-fresh {
+    color: #22C55E;
+  }
+  
+  .text-green-dark {
+    color: #15803D;
+  }
+  
+  .text-orange-accent {
+    color: #FB923C;
+  }
+  
+  .text-brown-main {
+    color: #2D1F1A;
+  }
+  
+  .text-brown-secondary {
+    color: #6B4F46;
   }
 }
 

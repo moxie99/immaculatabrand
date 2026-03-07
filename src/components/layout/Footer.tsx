@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { BRAND_NAME, BRAND_TAGLINE, SITE_CONFIG } from '@/lib/constants/site';
 
 const footerLinks = {
   company: [
@@ -19,8 +20,6 @@ const socialLinks = [
 ];
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="w-full border-t bg-background">
       <div className="container px-4 py-8 md:py-12">
@@ -29,10 +28,10 @@ export function Footer() {
           {/* Brand Section */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-primary">
-              African Delicacies
+              {BRAND_NAME}
             </h3>
             <p className="text-sm text-muted-foreground">
-              Authentic African food products delivered to your doorstep.
+              {BRAND_TAGLINE}
             </p>
           </div>
 
@@ -96,7 +95,7 @@ export function Footer() {
         {/* Copyright Section */}
         <div className="mt-8 border-t pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {currentYear} African Delicacies. All rights reserved.
+            © {SITE_CONFIG.currentYear} {BRAND_NAME}. All rights reserved.
           </p>
         </div>
       </div>

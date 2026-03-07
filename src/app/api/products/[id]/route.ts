@@ -235,6 +235,97 @@ export async function PUT(
 }
 
 /**
+ * PATCH /api/products/[id]
+ * Partially update product by ID (e.g., toggle featured status)
+ * Admin only - requires Basic Auth
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // Check authentication
+    const authError = checkAdminAuth(request);
+    if (authError) return authError;
+
+    const { id } = params;
+
+    // Parse request body
+    const body = await request.json();
+
+    logger.info('PATCH /api/products/[id]', { id, body });
+
+    // For partial updates, we only validate the fields that are present
+    const partialUpdateSchema = z.object({
+      isFeatured: z.boolean().optional(),
+      isActive: z.boolean().optional(),
+    });
+
+    const validatedData = partialUpdateSchema.parse(body);
+
+    // Update product with partial data
+    const product = await updateProduct(id, validatedData);
+
+    // Return success response
+    const response: ApiResponse = {
+      success: true,
+      data: product,
+      message: 'Product updated successfully',
+    };
+
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    logger.error('PATCH /api/products/[id] failed', { error, id: params.id });
+
+    // Handle validation errors
+    if (error instanceof z.ZodError) {
+      const fieldErrors: FieldError[] = error.errors.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Invalid product data',
+            fields: fieldErrors,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Handle not found errors
+    if (error instanceof NotFoundError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'NOT_FOUND',
+            message: error.message,
+          },
+        },
+        { status: 404 }
+      );
+    }
+
+    // Handle other errors
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Failed to update product',
+        },
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
  * DELETE /api/products/[id]
  * Soft delete product by ID (sets isActive=false)
  * Admin only - requires Basic Auth

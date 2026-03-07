@@ -6,6 +6,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import Home, { metadata } from './page';
+import { BRAND_NAME, SITE_DESCRIPTION } from '@/lib/constants/site';
 
 // Mock the home components
 vi.mock('@/components/home/HeroSection', () => ({
@@ -55,23 +56,22 @@ describe('Home Landing Page', () => {
 
   describe('SEO Metadata', () => {
     it('has proper title', () => {
-      expect(metadata.title).toBe('Authentic African Delicacies | Confectionary Platform');
+      expect(metadata.title).toBe(`${BRAND_NAME} | Premium Confectioneries & Delicacies`);
     });
 
     it('has proper description', () => {
-      expect(metadata.description).toContain('authentic African confectioneries');
-      expect(metadata.description).toContain('delivered to your doorstep');
+      expect(metadata.description).toBe(SITE_DESCRIPTION);
     });
 
     it('has keywords for SEO', () => {
-      expect(metadata.keywords).toContain('African confectionery');
-      expect(metadata.keywords).toContain('African sweets');
+      expect(metadata.keywords).toContain('confectionery');
+      expect(metadata.keywords).toContain('sweets');
       expect(metadata.keywords).toContain('traditional delicacies');
     });
 
     it('has Open Graph metadata', () => {
       expect(metadata.openGraph).toBeDefined();
-      expect(metadata.openGraph?.title).toBe('Authentic African Delicacies | Confectionary Platform');
+      expect(metadata.openGraph?.title).toBe(`${BRAND_NAME} | Premium Confectioneries & Delicacies`);
       expect(metadata.openGraph?.type).toBe('website');
       expect(metadata.openGraph?.locale).toBe('en_US');
     });
@@ -79,7 +79,7 @@ describe('Home Landing Page', () => {
     it('has Twitter Card metadata', () => {
       expect(metadata.twitter).toBeDefined();
       expect(metadata.twitter?.card).toBe('summary_large_image');
-      expect(metadata.twitter?.title).toBe('Authentic African Delicacies | Confectionary Platform');
+      expect(metadata.twitter?.title).toBe(`${BRAND_NAME} | Premium Confectioneries & Delicacies`);
     });
   });
 });

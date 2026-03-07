@@ -26,6 +26,8 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useToast } from '@/lib/hooks/useToast';
+import { useMediaUpload } from '@/lib/hooks/useMediaUpload';
 
 // Form schema based on productCreateSchema
 const formSchema = productCreateSchema;
@@ -42,9 +44,13 @@ export function ProductForm({ product, onSubmit, isLoading = false }: ProductFor
   const [imagePreview, setImagePreview] = useState<string | null>(
     product?.images?.[0] || null
   );
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [preparationSteps, setPreparationSteps] = useState<PreparationStep[]>(
     product?.preparationSteps || []
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { error: showError } = useToast();
+  const { upload: uploadImage } = useMediaUpload();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -61,17 +67,6 @@ export function ProductForm({ product, onSubmit, isLoading = false }: ProductFor
       isActive: product?.isActive ?? true,
     },
   });
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const addPreparationStep = () => {
     const newStep: PreparationStep = {
@@ -129,11 +124,43 @@ export function ProductForm({ product, onSubmit, isLoading = false }: ProductFor
     form.setValue('preparationSteps', renumberedSteps);
   };
 
+  const handleImageSelect = (file: File) => {
+    setSelectedImageFile(file);
+    // Create preview
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+  };
+
   const handleFormSubmit = async (data: FormValues) => {
     try {
+      setIsSubmitting(true);
+
+      // If there's a new image file selected, upload it first
+      if (selectedImageFile) {
+        try {
+          const media = await uploadImage({
+            file: selectedImageFile,
+            type: 'product',
+            altText: `${data.name} product image`,
+          });
+          
+          // Update form data with uploaded image URL
+          data.images = [media.secureUrl];
+        } catch (uploadError) {
+          showError('Image upload failed', 'Please try again or continue without an image.');
+          console.error('Image upload error:', uploadError);
+          // Continue with product creation even if image upload fails
+          data.images = [];
+        }
+      }
+
+      // Submit the product with image URL
       await onSubmit(data);
+      
+      setIsSubmitting(false);
     } catch (error) {
       console.error('Form submission error:', error);
+      setIsSubmitting(false);
     }
   };
 
@@ -247,46 +274,58 @@ export function ProductForm({ product, onSubmit, isLoading = false }: ProductFor
           </div>
         </Card>
 
-        {/* Image Upload - Simplified version */}
+        {/* Image Upload */}
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Product Image</h2>
           
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://res.cloudinary.com/..."
-                      value={field.value?.[0] || ''}
-                      onChange={(e) => {
-                        const url = e.target.value;
-                        field.onChange(url ? [url] : []);
-                        setImagePreview(url || null);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Upload images via the Media page (/admin/media) and paste the URL here
-                  </p>
-                </FormItem>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors">
+              <Input
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleImageSelect(file);
+                  }
+                }}
+                className="hidden"
+                id="product-image-input"
+              />
+              
+              {!imagePreview ? (
+                <label htmlFor="product-image-input" className="cursor-pointer block">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">Click to upload product image</p>
+                      <p className="text-xs text-gray-500 mt-1">JPG, PNG, WebP, GIF (max 5MB)</p>
+                    </div>
+                  </div>
+                </label>
+              ) : (
+                <div className="space-y-3">
+                  <img
+                    src={imagePreview}
+                    alt="Product preview"
+                    className="w-48 h-48 object-cover rounded-md border mx-auto"
+                  />
+                  <label htmlFor="product-image-input" className="inline-block">
+                    <Button type="button" variant="outline" size="sm" asChild>
+                      <span className="cursor-pointer">Change Image</span>
+                    </Button>
+                  </label>
+                </div>
               )}
-            />
-
-            {imagePreview && (
-              <div className="mt-4">
-                <p className="text-sm font-medium mb-2">Preview:</p>
-                <img
-                  src={imagePreview}
-                  alt="Product preview"
-                  className="w-48 h-48 object-cover rounded-md border"
-                />
-              </div>
-            )}
+            </div>
+            
+            <p className="text-xs text-muted-foreground">
+              Image will be uploaded automatically when you save the product
+            </p>
           </div>
         </Card>
 
@@ -466,8 +505,8 @@ export function ProductForm({ product, onSubmit, isLoading = false }: ProductFor
 
         {/* Submit Button */}
         <div className="flex justify-end gap-4">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
+          <Button type="submit" disabled={isLoading || isSubmitting}>
+            {isSubmitting ? 'Saving...' : isLoading ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
           </Button>
         </div>
       </form>

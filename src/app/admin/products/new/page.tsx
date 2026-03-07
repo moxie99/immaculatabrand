@@ -6,6 +6,7 @@ import { ProductForm } from '@/components/products/ProductForm';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/lib/hooks/useToast';
 
 /**
  * New Product Page
@@ -23,6 +24,7 @@ import Link from 'next/link';
 export default function NewProductPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { success, error } = useToast();
 
   const handleSubmit = async (data: any) => {
     setIsLoading(true);
@@ -36,15 +38,16 @@ export default function NewProductPage() {
       });
 
       if (response.ok) {
+        success('Product created', 'The product has been successfully created.');
         // Redirect to products list after successful creation
         router.push('/admin/products');
       } else {
         const result = await response.json();
-        alert(result.error?.message || 'Failed to create product');
+        error('Creation failed', result.error?.message || 'Failed to create product');
       }
-    } catch (error) {
-      console.error('Failed to create product:', error);
-      alert('Failed to create product');
+    } catch (err) {
+      console.error('Failed to create product:', err);
+      error('Creation failed', 'An error occurred while creating the product.');
     } finally {
       setIsLoading(false);
     }

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Product } from '@/types/product.types';
+import { useToast } from '@/lib/hooks/useToast';
 
 /**
  * Edit Product Page
@@ -27,6 +28,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -62,15 +64,16 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       });
 
       if (response.ok) {
+        toast.success('Product updated', 'The product has been successfully updated.');
         // Redirect to products list after successful update
         router.push('/admin/products');
       } else {
         const result = await response.json();
-        alert(result.error?.message || 'Failed to update product');
+        toast.error('Update failed', result.error?.message || 'Failed to update product');
       }
-    } catch (error) {
-      console.error('Failed to update product:', error);
-      alert('Failed to update product');
+    } catch (err) {
+      console.error('Failed to update product:', err);
+      toast.error('Update failed', 'An error occurred while updating the product.');
     } finally {
       setIsSaving(false);
     }

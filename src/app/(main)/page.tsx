@@ -1,16 +1,22 @@
 import React from 'react';
 import { Metadata } from 'next';
 import HeroSection from '@/components/home/HeroSection';
-import ImageCarousel from '@/components/home/ImageCarousel';
+import AboutUsSection from '@/components/home/AboutUsSection';
 import CakesAndPastries from '@/components/home/CakesAndPastries';
+import FoodstuffsSection from '@/components/home/FoodstuffsSection';
+import FishSection from '@/components/home/FishSection';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
+import { BRAND_NAME, SITE_DESCRIPTION, SITE_KEYWORDS } from '@/lib/constants/site';
 
 /**
  * Landing Page
  * 
  * Main homepage at root route (/) featuring:
  * - HeroSection: Hero image and text from Content collection
- * - ImageCarousel: Carousel images from Media collection
+ * - AboutUsSection: Company history with carousel and biography
+ * - CakesAndPastries: Confectionary products showcase
+ * - FoodstuffsSection: Foodstuffs products showcase
+ * - FishSection: Fish products showcase
  * - FeaturedProducts: Featured products display
  * 
  * Server-side rendered for optimal SEO and performance.
@@ -19,19 +25,19 @@ import FeaturedProducts from '@/components/home/FeaturedProducts';
  */
 
 export const metadata: Metadata = {
-  title: 'Authentic African Delicacies | Confectionary Platform',
-  description: 'Discover authentic African confectioneries and delicacies delivered to your doorstep. Browse our curated selection of traditional treats and sweets.',
-  keywords: ['African confectionery', 'African sweets', 'traditional delicacies', 'African treats', 'authentic African food'],
+  title: `${BRAND_NAME} | Premium Confectioneries & Delicacies`,
+  description: SITE_DESCRIPTION,
+  keywords: SITE_KEYWORDS,
   openGraph: {
-    title: 'Authentic African Delicacies | Confectionary Platform',
-    description: 'Discover authentic African confectioneries and delicacies delivered to your doorstep.',
+    title: `${BRAND_NAME} | Premium Confectioneries & Delicacies`,
+    description: SITE_DESCRIPTION,
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Authentic African Delicacies | Confectionary Platform',
-    description: 'Discover authentic African confectioneries and delicacies delivered to your doorstep.',
+    title: `${BRAND_NAME} | Premium Confectioneries & Delicacies`,
+    description: SITE_DESCRIPTION,
   },
 };
 
@@ -43,20 +49,24 @@ export default function Home() {
         <HeroSection />
       </section>
 
-      {/* Cakes and Pastries Section - Light warm beige */}
-      <CakesAndPastries />
+      {/* About Us Section - Dark background with carousel and biography */}
+      <AboutUsSection />
 
-      {/* Image Carousel - White background for contrast */}
-      <section className="w-full py-12 px-4 md:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <ImageCarousel />
-        </div>
-      </section>
-
-      {/* Featured Products - Warm orange tint background */}
+       {/* Featured Products - Warm orange tint background */}
       <section className="w-full bg-gradient-to-b from-orange-50/50 to-white">
         <FeaturedProducts />
       </section>
+
+      {/* Cakes and Pastries Section - Light warm beige */}
+      <CakesAndPastries />
+
+      {/* Foodstuffs Section - Light green */}
+      <FoodstuffsSection />
+
+      {/* Fish Section - Light blue */}
+      <FishSection />
+
+     
     </main>
   );
 }

@@ -137,6 +137,25 @@ export default function OrderDetail({ orderId, className = '' }: OrderDetailProp
   };
 
   /**
+   * Get valid status transitions based on current status
+   * State machine rules:
+   * - new -> contacted, cancelled
+   * - contacted -> completed, cancelled
+   * - completed -> (terminal state, no transitions)
+   * - cancelled -> (terminal state, no transitions)
+   */
+  const getValidStatusOptions = (currentStatus: OrderStatus): OrderStatus[] => {
+    const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+      new: ['new', 'contacted', 'cancelled'],
+      contacted: ['contacted', 'completed', 'cancelled'],
+      completed: ['completed'], // Terminal state
+      cancelled: ['cancelled'], // Terminal state
+    };
+    
+    return validTransitions[currentStatus] || [currentStatus];
+  };
+
+  /**
    * Format date for display
    */
   const formatDate = (date: Date | string) => {
@@ -252,15 +271,17 @@ export default function OrderDetail({ orderId, className = '' }: OrderDetailProp
                 <Select
                   value={selectedStatus}
                   onValueChange={(value) => setSelectedStatus(value as OrderStatus)}
+                  disabled={order.status === 'completed' || order.status === 'cancelled'}
                 >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">New</SelectItem>
-                    <SelectItem value="contacted">Contacted</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                    {getValidStatusOptions(order.status).map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 {selectedStatus !== order.status && (
@@ -273,6 +294,11 @@ export default function OrderDetail({ orderId, className = '' }: OrderDetailProp
                   </Button>
                 )}
               </div>
+              {(order.status === 'completed' || order.status === 'cancelled') && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  This order is in a terminal state and cannot be changed.
+                </p>
+              )}
             </div>
 
             <div>

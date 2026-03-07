@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useProducts } from '@/lib/hooks/useProducts';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -17,15 +17,49 @@ import ProductCard from '@/components/products/ProductCard';
  * - Uses SimpleProductCard for each product (temporary until task 19.1)
  * - Includes "View All Products" button
  * - Handles loading and empty states
+ * - Dynamic title and subtitle from content API
  * 
  * Requirements: Design - Home Components
  */
 export default function FeaturedProducts() {
+  const [title, setTitle] = useState('Featured Products');
+  const [subtitle, setSubtitle] = useState('Discover our handpicked selection of authentic African delicacies');
+
   const { products, isLoading, isError, error } = useProducts({
     filters: { featured: true },
     pagination: { limit: 12 },
     revalidateOnFocus: false,
   });
+
+  // Fetch dynamic content for title and subtitle
+  useEffect(() => {
+    async function fetchContent() {
+      try {
+        const [titleResponse, subtitleResponse] = await Promise.all([
+          fetch('/api/content?key=featured_section_title'),
+          fetch('/api/content?key=featured_section_subtitle')
+        ]);
+
+        if (titleResponse.ok) {
+          const titleData = await titleResponse.json();
+          if (titleData.success && titleData.data?.data?.value) {
+            setTitle(titleData.data.data.value);
+          }
+        }
+
+        if (subtitleResponse.ok) {
+          const subtitleData = await subtitleResponse.json();
+          if (subtitleData.success && subtitleData.data?.data?.value) {
+            setSubtitle(subtitleData.data.data.value);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch featured section content:', err);
+      }
+    }
+
+    fetchContent();
+  }, []);
 
   // Log errors for debugging
   if (isError && error) {
@@ -37,10 +71,10 @@ export default function FeaturedProducts() {
       {/* Section Title */}
       <div className="max-w-7xl mx-auto mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
-          Featured Products
+          {title}
         </h2>
         <p className="text-center text-muted-foreground">
-          Discover our handpicked selection of authentic African delicacies
+          {subtitle}
         </p>
       </div>
 

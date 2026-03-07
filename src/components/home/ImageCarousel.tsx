@@ -144,8 +144,16 @@ export default function ImageCarousel() {
         }}
         plugins={[autoplayPlugin.current]}
         className="w-full"
-        onMouseEnter={() => autoplayPlugin.current.stop()}
-        onMouseLeave={() => autoplayPlugin.current.play()}
+        onMouseEnter={() => {
+          if (autoplayPlugin.current && typeof autoplayPlugin.current.stop === 'function') {
+            autoplayPlugin.current.stop();
+          }
+        }}
+        onMouseLeave={() => {
+          if (autoplayPlugin.current && typeof autoplayPlugin.current.play === 'function') {
+            autoplayPlugin.current.play();
+          }
+        }}
       >
         <CarouselContent>
           {carouselImages.map((image) => (

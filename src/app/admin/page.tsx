@@ -28,11 +28,20 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const fetchRecentOrders = async () => {
       try {
-        const response = await fetch('/api/orders?limit=10&sort=createdAt:desc');
+        // Add Basic Auth header for admin endpoints
+        const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
+        const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+        
+        const response = await fetch('/api/orders?limit=10&sort=createdAt:desc', {
+          headers: {
+            'Authorization': `Basic ${btoa(`${adminUsername}:${adminPassword}`)}`,
+          },
+        });
         const result = await response.json();
         
         if (response.ok && result.data) {
-          setRecentOrders(result.data.orders || []);
+          // API returns orders directly in result.data (not result.data.orders)
+          setRecentOrders(Array.isArray(result.data) ? result.data : []);
         } else {
           setRecentOrders([]);
         }

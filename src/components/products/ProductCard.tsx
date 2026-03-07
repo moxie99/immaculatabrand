@@ -42,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const formattedPrice = new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: currency || 'GBP',
-  }).format(price / 100);
+  }).format(price);
 
   // Capitalize category for display
   const displayCategory = category.charAt(0).toUpperCase() + category.slice(1);

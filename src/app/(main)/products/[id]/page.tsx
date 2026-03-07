@@ -2,15 +2,15 @@ import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductDetail from '@/components/products/ProductDetail';
-import { getProductById } from '@/lib/services/product.service';
+import { getProductBySlug } from '@/lib/services/product.service';
 
 /**
  * Product Detail Page
  * 
- * Route: /products/[id]
+ * Route: /products/[id] (where id is actually the slug)
  * 
  * Features:
- * - Fetch product by ID
+ * - Fetch product by slug
  * - Render ProductDetail component
  * - Server-side rendering for SEO
  * - Structured data (JSON-LD) for rich snippets
@@ -21,7 +21,7 @@ import { getProductById } from '@/lib/services/product.service';
 
 interface ProductDetailPageProps {
   params: {
-    id: string;
+    id: string; // This is actually the slug
   };
 }
 
@@ -30,7 +30,7 @@ interface ProductDetailPageProps {
  */
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   try {
-    const product = await getProductById(params.id);
+    const product = await getProductBySlug(params.id);
 
     const formattedPrice = new Intl.NumberFormat('en-GB', {
       style: 'currency',
@@ -68,7 +68,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   let product;
 
   try {
-    product = await getProductById(params.id);
+    product = await getProductBySlug(params.id);
   } catch (error) {
     console.error('Failed to fetch product:', error);
     notFound();

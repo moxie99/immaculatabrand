@@ -19,8 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Star } from 'lucide-react';
 import { Product, Category } from '@/types/product.types';
+import { DeleteConfirmationModal } from '@/components/admin/DeleteConfirmationModal';
+import { useToast } from '@/lib/hooks/useToast';
 
 /**
  * Products Management Page
@@ -42,6 +44,13 @@ export default function ProductsManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; product: Product | null }>({
+    isOpen: false,
+    product: null,
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [togglingFeatured, setTogglingFeatured] = useState<string | null>(null);
+  const { success, error } = useToast();
 
   useEffect(() => {
     fetchProducts();
@@ -72,24 +81,89 @@ export default function ProductsManagementPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) {
-      return;
-    }
-
+    setIsDeleting(true);
     try {
+      // Get admin credentials from environment or use default
+      const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
+      const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+      const credentials = btoa(`${username}:${password}`);
+
       const response = await fetch(`/api/products/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Basic ${credentials}`,
+        },
       });
 
       if (response.ok) {
-        // Refresh products list
+        // Close modal and refresh products list
+        setDeleteModal({ isOpen: false, product: null });
+        success('Product deleted', 'The product has been successfully deleted.');
         fetchProducts();
       } else {
-        alert('Failed to delete product');
+        const result = await response.json();
+        error('Delete failed', result.error?.message || 'Failed to delete the product. Please try again.');
       }
-    } catch (error) {
-      console.error('Failed to delete product:', error);
-      alert('Failed to delete product');
+    } catch (err) {
+      console.error('Failed to delete product:', err);
+      error('Delete failed', 'An error occurred while deleting the product.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const openDeleteModal = (product: Product) => {
+    setDeleteModal({ isOpen: true, product });
+  };
+
+  const closeDeleteModal = () => {
+    if (!isDeleting) {
+      setDeleteModal({ isOpen: false, product: null });
+    }
+  };
+
+  const confirmDelete = () => {
+    if (deleteModal.product) {
+      handleDelete(deleteModal.product._id);
+    }
+  };
+
+  const toggleFeatured = async (product: Product) => {
+    setTogglingFeatured(product._id);
+    try {
+      const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
+      const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin';
+      const credentials = btoa(`${username}:${password}`);
+
+      const response = await fetch(`/api/products/${product._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${credentials}`,
+        },
+        body: JSON.stringify({
+          isFeatured: !product.isFeatured,
+        }),
+      });
+
+      if (response.ok) {
+        const newStatus = !product.isFeatured;
+        success(
+          newStatus ? 'Added to Featured' : 'Removed from Featured',
+          newStatus 
+            ? `${product.name} has been added to featured products.`
+            : `${product.name} has been removed from featured products.`
+        );
+        fetchProducts();
+      } else {
+        const result = await response.json();
+        error('Update failed', result.error?.message || 'Failed to update featured status.');
+      }
+    } catch (err) {
+      console.error('Failed to toggle featured:', err);
+      error('Update failed', 'An error occurred while updating featured status.');
+    } finally {
+      setTogglingFeatured(null);
     }
   };
 
@@ -102,7 +176,7 @@ export default function ProductsManagementPage() {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency || 'GBP',
-    }).format(price / 100);
+    }).format(price);
   };
 
   return (
@@ -196,11 +270,22 @@ export default function ProductsManagementPage() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    {product.isFeatured ? (
-                      <span className="text-yellow-600">★</span>
-                    ) : (
-                      <span className="text-gray-300">☆</span>
-                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleFeatured(product)}
+                      disabled={togglingFeatured === product._id}
+                      className="p-0 h-8 w-8"
+                      title={product.isFeatured ? 'Remove from featured' : 'Add to featured'}
+                    >
+                      {togglingFeatured === product._id ? (
+                        <span className="animate-spin">⏳</span>
+                      ) : product.isFeatured ? (
+                        <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      ) : (
+                        <Star className="h-5 w-5 text-gray-300" />
+                      )}
+                    </Button>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -214,7 +299,7 @@ export default function ProductsManagementPage() {
                         variant="ghost"
                         size="sm"
                         className="gap-2 text-destructive hover:text-destructive"
-                        onClick={() => handleDelete(product._id)}
+                        onClick={() => openDeleteModal(product)}
                       >
                         <Trash2 className="h-4 w-4" />
                         Delete
@@ -227,6 +312,17 @@ export default function ProductsManagementPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        itemName={deleteModal.product?.name}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }
