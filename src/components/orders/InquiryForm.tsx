@@ -294,16 +294,16 @@ export function InquiryForm({ productId, onSuccess }: InquiryFormProps) {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Message</FormLabel>
+                    <FormLabel>Order Details</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Any special requests or questions..."
+                        placeholder="Please specify weight needed, special requests, or any questions about your order..."
                         className="min-h-[100px]"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Optional: Add any special requests or questions about your order
+                      Include details like weight needed (e.g., 2kg), special requests, or questions
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

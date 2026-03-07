@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import ProductDetail from './ProductDetail';
 import type { Product } from '@/types/product.types';
@@ -28,6 +28,32 @@ vi.mock('./PreparationGuide', () => ({
           <p>{step.description}</p>
         </div>
       ))}
+    </div>
+  ),
+}));
+
+// Mock InquiryForm component
+vi.mock('@/components/orders/InquiryForm', () => ({
+  InquiryForm: () => (
+    <div>
+      <h2>Product Inquiry</h2>
+      <label htmlFor="name">Name *</label>
+      <input id="name" />
+      <label htmlFor="email">Email *</label>
+      <input id="email" type="email" />
+      <label htmlFor="phone">Phone *</label>
+      <input id="phone" type="tel" />
+      <label htmlFor="product">Product *</label>
+      <select id="product" />
+      <label htmlFor="quantity">Quantity *</label>
+      <input id="quantity" type="number" />
+      <label htmlFor="order-details">Order Details</label>
+      <textarea id="order-details" />
+      <label htmlFor="street">Street Address</label>
+      <input id="street" />
+      <label htmlFor="city">City</label>
+      <input id="city" />
+      <button type="submit">Submit Inquiry</button>
     </div>
   ),
 }));
@@ -154,15 +180,19 @@ describe('ProductDetail', () => {
     expect(screen.getByText('Make an Inquiry')).toBeTruthy();
   });
 
-  it('opens inquiry dialog when button is clicked', () => {
+  it('opens inquiry dialog when button is clicked', async () => {
     render(<ProductDetail product={mockProduct} />);
     const inquiryButton = screen.getByText('Make an Inquiry');
     fireEvent.click(inquiryButton);
     
-    expect(screen.getByText('Product Inquiry')).toBeTruthy();
-    expect(screen.getByLabelText('Name')).toBeTruthy();
-    expect(screen.getByLabelText('Email')).toBeTruthy();
-    expect(screen.getByLabelText('Message')).toBeTruthy();
+    // Wait for the InquiryForm to render
+    await waitFor(() => {
+      expect(screen.getAllByText('Product Inquiry').length).toBeGreaterThan(0);
+    });
+    
+    expect(screen.getByLabelText('Name *')).toBeTruthy();
+    expect(screen.getByLabelText('Email *')).toBeTruthy();
+    expect(screen.getByLabelText('Phone *')).toBeTruthy();
   });
 
   it('handles product with no images gracefully', () => {
@@ -173,11 +203,25 @@ describe('ProductDetail', () => {
     expect(screen.getByText('Chocolate Cake')).toBeTruthy();
   });
 
-  it('displays placeholder note in inquiry form', () => {
+  it('displays full inquiry form with all required fields', async () => {
     render(<ProductDetail product={mockProduct} />);
     const inquiryButton = screen.getByText('Make an Inquiry');
     fireEvent.click(inquiryButton);
     
-    expect(screen.getByText(/This is a placeholder form/)).toBeTruthy();
+    // Wait for form to render
+    await waitFor(() => {
+      expect(screen.getByLabelText('Name *')).toBeTruthy();
+    });
+    
+    // Check all required fields are present
+    expect(screen.getByLabelText('Email *')).toBeTruthy();
+    expect(screen.getByLabelText('Phone *')).toBeTruthy();
+    expect(screen.getByLabelText('Product *')).toBeTruthy();
+    expect(screen.getByLabelText('Quantity *')).toBeTruthy();
+    expect(screen.getByLabelText('Order Details')).toBeTruthy();
+    
+    // Check shipping address fields are present
+    expect(screen.getByLabelText('Street Address')).toBeTruthy();
+    expect(screen.getByLabelText('City')).toBeTruthy();
   });
 });

@@ -28,7 +28,6 @@ const homepageHeroSchema = z.object({
   heading: z.string().min(1, 'Heading is required'),
   subheading: z.string().min(1, 'Subheading is required'),
   ctaText: z.string().min(1, 'CTA text is required'),
-  ctaLink: z.string().min(1, 'CTA link is required'),
 });
 
 // About Page form schema
@@ -69,7 +68,6 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
           heading: '',
           subheading: '',
           ctaText: '',
-          ctaLink: '',
         }
       : {
           key: contentKey,
@@ -108,7 +106,6 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
               heading: data.heading || '',
               subheading: data.subheading || '',
               ctaText: data.ctaText || '',
-              ctaLink: data.ctaLink || '',
             });
           } else if (contentKey === 'about_page') {
             const data = content.data as any;
@@ -149,7 +146,7 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
           heading: heroValues.heading,
           subheading: heroValues.subheading,
           ctaText: heroValues.ctaText,
-          ctaLink: heroValues.ctaLink,
+          ctaLink: '/products', // Fixed link to products page
         };
       } else if (contentKey === 'about_page') {
         const aboutValues = values as AboutPageFormValues;
@@ -329,24 +326,7 @@ export function ContentEditor({ contentKey }: ContentEditorProps) {
                       <Input placeholder="e.g., Shop Now" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Text displayed on the button
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="ctaLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Call-to-Action Link</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., /products" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      URL where the button should navigate
+                      Text displayed on the button (links to products page)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

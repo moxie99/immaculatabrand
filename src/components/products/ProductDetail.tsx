@@ -5,10 +5,8 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import PreparationGuide from './PreparationGuide';
+import { InquiryForm } from '@/components/orders/InquiryForm';
 import type { Product } from '@/types/product.types';
 
 /**
@@ -143,35 +141,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 Make an Inquiry
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Product Inquiry</DialogTitle>
               </DialogHeader>
-              {/* Placeholder Inquiry Form - will be replaced in Task 20.1 */}
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="inquiry-name">Name</Label>
-                  <Input id="inquiry-name" placeholder="Your name" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="inquiry-email">Email</Label>
-                  <Input id="inquiry-email" type="email" placeholder="your@email.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="inquiry-message">Message</Label>
-                  <Textarea 
-                    id="inquiry-message" 
-                    placeholder="Your inquiry about this product..."
-                    rows={4}
-                  />
-                </div>
-                <Button className="w-full">
-                  Send Inquiry
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Note: This is a placeholder form. Full functionality will be available soon.
-                </p>
-              </div>
+              <InquiryForm productId={product._id} />
             </DialogContent>
           </Dialog>
         </div>
