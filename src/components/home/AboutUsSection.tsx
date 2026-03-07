@@ -33,7 +33,7 @@ export default function AboutUsSection() {
   const [title, setTitle] = useState('A Taste of Tradition');
   const [subtitle, setSubtitle] = useState('Our Story');
   const [content, setContent] = useState(
-    'Founded in 2012, we reflect the vibrant spirit of authentic bakeries. Rooted in tradition yet driven by innovation, we craft every bun, tart, and cake to honour authentic recipes while reimagining new products for today\'s tastes.'
+    'Founded in 2025, we reflect the vibrant spirit of authentic bakeries. Rooted in tradition yet driven by innovation, we craft every bun, tart, and cake to honour authentic recipes while reimagining new products for today\'s tastes.'
   );
   const [isLoading, setIsLoading] = useState(true);
 

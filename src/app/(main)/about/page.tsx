@@ -28,6 +28,7 @@ export default function AboutPage() {
   const [carouselImages, setCarouselImages] = useState<Array<{ url: string; alt: string }>>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [contactInfo, setContactInfo] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -35,12 +36,13 @@ export default function AboutPage() {
         setIsLoading(true);
         
         // Fetch content
-        const [titleRes, subtitleRes, contentRes, heroRes, carouselRes] = await Promise.all([
+        const [titleRes, subtitleRes, contentRes, heroRes, carouselRes, contactRes] = await Promise.all([
           fetch('/api/content?key=about_section_title'),
           fetch('/api/content?key=about_section_subtitle'),
           fetch('/api/content?key=about_section_content'),
           fetch('/api/media/hero?limit=1'),
-          fetch('/api/media/carousel?limit=10')
+          fetch('/api/media/carousel?limit=10'),
+          fetch('/api/content?key=contact_info')
         ]);
         
         // Process title
@@ -83,6 +85,14 @@ export default function AboutPage() {
               url: img.url,
               alt: img.alt || 'Company image'
             })));
+          }
+        }
+        
+        // Process contact info
+        if (contactRes.ok) {
+          const contactData = await contactRes.json();
+          if (contactData.success && contactData.data?.data) {
+            setContactInfo(contactData.data.data);
           }
         }
       } catch (error) {
@@ -190,7 +200,7 @@ export default function AboutPage() {
                 <div className="flex items-center gap-4 mb-6">
                   <div className="h-px bg-gradient-to-r from-amber-400 to-orange-400 flex-1" />
                   <span className="text-sm font-semibold text-amber-600 tracking-wider">
-                    SINCE 2012
+                    SINCE 2025
                   </span>
                   <div className="h-px bg-gradient-to-r from-orange-400 to-amber-400 flex-1" />
                 </div>
@@ -275,7 +285,11 @@ export default function AboutPage() {
                 size="lg"
                 className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
               >
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <a 
+                  href={contactInfo?.socialMedia?.instagram || "https://instagram.com"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
                   Follow on Instagram
                 </a>
               </Button>

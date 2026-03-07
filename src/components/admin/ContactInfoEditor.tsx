@@ -37,6 +37,9 @@ interface ContactInfo {
   };
   email: string;
   phoneNumbers: PhoneNumber[];
+  socialMedia: {
+    instagram: string;
+  };
 }
 
 export function ContactInfoEditor() {
@@ -53,6 +56,9 @@ export function ContactInfoEditor() {
     },
     email: '',
     phoneNumbers: [],
+    socialMedia: {
+      instagram: '',
+    },
   });
 
   // Fetch existing contact info
@@ -92,6 +98,16 @@ export function ContactInfoEditor() {
     setContactInfo({
       ...contactInfo,
       email: value,
+    });
+  };
+
+  const handleSocialMediaChange = (platform: 'instagram', value: string) => {
+    setContactInfo({
+      ...contactInfo,
+      socialMedia: {
+        ...contactInfo.socialMedia,
+        [platform]: value,
+      },
     });
   };
 
@@ -305,6 +321,25 @@ export function ContactInfoEditor() {
               </div>
             ))
           )}
+        </CardContent>
+      </Card>
+
+      {/* Social Media */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Social Media</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div>
+            <Label htmlFor="instagram">Instagram URL</Label>
+            <Input
+              id="instagram"
+              type="url"
+              value={contactInfo.socialMedia?.instagram || ''}
+              onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
+              placeholder="https://www.instagram.com/your_account"
+            />
+          </div>
         </CardContent>
       </Card>
 

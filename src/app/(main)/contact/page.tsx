@@ -45,6 +45,9 @@ interface ContactInfo {
     label: string;
     number: string;
   }>;
+  socialMedia?: {
+    instagram?: string;
+  };
 }
 
 export default function ContactPage() {
@@ -682,7 +685,11 @@ export default function ContactPage() {
                 size="lg"
                 className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
               >
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <a 
+                  href={contactInfo?.socialMedia?.instagram || "https://instagram.com"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
                   Follow on Instagram
                 </a>
               </Button>
