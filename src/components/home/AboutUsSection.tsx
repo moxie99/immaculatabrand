@@ -18,10 +18,10 @@ interface CarouselImage {
 
 /**
  * AboutUsSection Component
- * 
+ *
  * Displays company history with an auto-scrolling carousel on the left
  * and biography/story content on the right.
- * 
+ *
  * Features:
  * - Auto-scrolling carousel with company images
  * - Dynamic content from Content API
@@ -33,14 +33,13 @@ export default function AboutUsSection() {
   const [title, setTitle] = useState('A Taste of Tradition');
   const [subtitle, setSubtitle] = useState('Our Story');
   const [content, setContent] = useState(
-    'Founded in 2025, we reflect the vibrant spirit of authentic bakeries. Rooted in tradition yet driven by innovation, we craft every bun, tart, and cake to honour authentic recipes while reimagining new products for today\'s tastes.'
+    "Founded in 2025, we reflect the vibrant spirit of authentic bakeries. Rooted in tradition yet driven by innovation, we craft every bun, tart, and cake to honour authentic recipes while reimagining new products for today's tastes."
   );
   const [isLoading, setIsLoading] = useState(true);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true },
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ delay: 4000, stopOnInteraction: false }),
+  ]);
 
   // Ensure autoplay starts
   useEffect(() => {
@@ -67,7 +66,7 @@ export default function AboutUsSection() {
         const [titleRes, subtitleRes, contentRes] = await Promise.all([
           fetch('/api/content?key=about_section_title'),
           fetch('/api/content?key=about_section_subtitle'),
-          fetch('/api/content?key=about_section_content')
+          fetch('/api/content?key=about_section_content'),
         ]);
 
         if (titleRes.ok) {
@@ -116,11 +115,11 @@ export default function AboutUsSection() {
                   loop: true,
                 }}
               >
-                <div ref={emblaRef} className="overflow-hidden">
+                <div ref={emblaRef} className="overflow-hidden rounded-xl">
                   <CarouselContent>
                     {carouselImages.map((image) => (
                       <CarouselItem key={image._id}>
-                        <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-2xl">
+                        <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl">
                           <Image
                             src={image.url}
                             alt={image.altText || 'Company image'}
@@ -138,34 +137,34 @@ export default function AboutUsSection() {
             )}
           </div>
 
-          {/* Right: Biography/Content */}
-          <div className="space-y-6 text-white">
+          {/* Right: Biography/Content - Glassmorphism Card */}
+          <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 md:p-10 shadow-2xl">
             {/* Title with accent */}
             <div className="space-y-2">
               <div className="inline-block">
-                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-500 to-red-600 text-transparent bg-clip-text">
+                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-red-500 text-transparent bg-clip-text">
                   {title}
                 </h2>
-                <div className="h-1 w-24 bg-gradient-to-r from-red-500 to-red-600 mt-2 rounded-full" />
+                <div className="h-1 w-24 bg-gradient-to-r from-red-400 to-red-500 mt-2 rounded-full" />
               </div>
             </div>
 
             {/* Subtitle */}
-            <h3 className="text-2xl md:text-3xl font-semibold text-amber-100">
+            <h3 className="text-2xl md:text-3xl font-semibold text-amber-200 mt-6">
               {subtitle}
             </h3>
 
             {/* Content */}
-            <div className="space-y-4 text-lg text-slate-200 leading-relaxed">
+            <div className="space-y-4 text-lg text-slate-200 leading-relaxed mt-6">
               {content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="text-base md:text-lg">
+                <p key={index} className="text-base md:text-lg text-slate-300">
                   {paragraph}
                 </p>
               ))}
             </div>
 
             {/* Decorative element */}
-            <div className="pt-6">
+            <div className="pt-6 mt-6">
               <div className="flex items-center gap-4">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-500 to-transparent" />
                 <div className="text-amber-400 text-sm font-medium tracking-wider">

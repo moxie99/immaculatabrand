@@ -34,7 +34,7 @@ export function Header() {
               alt={BRAND_NAME}
               width={60}
               height={60}
-              className="h-12 w-12 object-contain"
+              className="h-12 w-12 object-contain rounded-full"
               priority
             />
             <div className="ml-3">

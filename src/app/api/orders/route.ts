@@ -1,6 +1,6 @@
 /**
  * Orders API Route
- * 
+ *
  * GET /api/orders - List orders with pagination and filters (admin only)
  * POST /api/orders - Create new order/inquiry (public endpoint)
  */
@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getAllOrders, createOrder } from '@/lib/services/order.service';
+import { sendOrderNotificationEmail } from '@/lib/services/email.service';
 import { orderCreateSchema, orderFilterSchema } from '@/lib/utils/validation';
 import { ValidationError } from '@/lib/utils/errors';
 import { logger } from '@/lib/utils/logger';
@@ -18,7 +19,7 @@ import { PaginatedResponse, ApiResponse, FieldError } from '@/types/api.types';
  */
 function checkAdminAuth(request: NextRequest): NextResponse | null {
   const authHeader = request.headers.get('authorization');
-  
+
   if (!authHeader) {
     return NextResponse.json(
       {
@@ -28,18 +29,20 @@ function checkAdminAuth(request: NextRequest): NextResponse | null {
           message: 'Authentication required',
         },
       },
-      { 
+      {
         status: 401,
         headers: {
-          'WWW-Authenticate': 'Basic realm="Admin Area"'
-        }
+          'WWW-Authenticate': 'Basic realm="Admin Area"',
+        },
       }
     );
   }
 
   try {
     const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+    const credentials = Buffer.from(base64Credentials, 'base64').toString(
+      'utf-8'
+    );
     const [username, password] = credentials.split(':');
 
     const validUsername = process.env.ADMIN_USERNAME;
@@ -171,6 +174,16 @@ export async function POST(request: NextRequest) {
 
     // Create order
     const order = await createOrder(validatedData);
+
+    // Send notification email to admin
+    try {
+      await sendOrderNotificationEmail({ order });
+    } catch (emailError) {
+      logger.error('Failed to send order notification email', {
+        emailError,
+        orderNumber: order.orderNumber,
+      });
+    }
 
     // Return success response with order number
     const response: ApiResponse = {
