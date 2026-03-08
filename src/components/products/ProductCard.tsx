@@ -31,7 +31,7 @@ export interface ProductCardProps {
  * Requirements: Design - Product Components
  */
 export default function ProductCard({ product }: ProductCardProps) {
-  const { _id, name, price, currency, images, category } = product;
+  const { name, price, currency, images, category, slug } = product;
 
   // Use first image or fallback to placeholder
   const imageUrl = images && images.length > 0 
@@ -81,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Action Button */}
       <CardFooter className="pt-0">
         <Button asChild className="w-full group-hover:bg-primary/90 transition-colors">
-          <Link href={`/products/${_id}`}>
+          <Link href={`/products/${slug}`}>
             View Details
           </Link>
         </Button>
