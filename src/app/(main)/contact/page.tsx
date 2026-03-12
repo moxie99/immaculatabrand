@@ -686,7 +686,7 @@ export default function ContactPage() {
                 className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
               >
                 <a 
-                  href={contactInfo?.socialMedia?.instagram || "https://instagram.com"} 
+                  href={contactInfo?.socialMedia?.instagram || "https://www.instagram.com/immaculate_360?igsh=NzFhbDJjeDczYWln"} 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >

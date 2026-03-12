@@ -335,9 +335,9 @@ export function ContactInfoEditor() {
             <Input
               id="instagram"
               type="url"
-              value={contactInfo.socialMedia?.instagram || ''}
+              value={contactInfo.socialMedia?.instagram || 'https://www.instagram.com/immaculate_360?igsh=NzFhbDJjeDczYWln'}
               onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
-              placeholder="https://www.instagram.com/your_account"
+              placeholder="https://www.instagram.com/immaculate_360?igsh=NzFhbDJjeDczYWln"
             />
           </div>
         </CardContent>

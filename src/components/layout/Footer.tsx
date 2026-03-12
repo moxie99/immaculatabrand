@@ -15,7 +15,7 @@ const footerLinks = {
 
 const socialLinks = [
   { href: 'https://facebook.com', label: 'Facebook', icon: Facebook },
-  { href: 'https://instagram.com', label: 'Instagram', icon: Instagram },
+  { href: 'https://www.instagram.com/immaculate_360?igsh=NzFhbDJjeDczYWln', label: 'Instagram', icon: Instagram },
   { href: 'https://twitter.com', label: 'Twitter', icon: Twitter },
 ];
 

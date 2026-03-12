@@ -21,7 +21,7 @@ export const SITE_CONFIG = {
   // Social Media (optional - add your links)
   social: {
     facebook: '',
-    instagram: '',
+    instagram: 'https://www.instagram.com/immaculate_360?igsh=NzFhbDJjeDczYWln',
     twitter: '',
   },
   
