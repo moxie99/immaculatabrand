@@ -3,8 +3,6 @@ import { Metadata } from 'next';
 import HeroSection from '@/components/home/HeroSection';
 import AboutUsSection from '@/components/home/AboutUsSection';
 import CakesAndPastries from '@/components/home/CakesAndPastries';
-import FoodstuffsSection from '@/components/home/FoodstuffsSection';
-import FishSection from '@/components/home/FishSection';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
 import { BRAND_NAME, SITE_DESCRIPTION, SITE_KEYWORDS } from '@/lib/constants/site';
 
@@ -60,11 +58,11 @@ export default function Home() {
       {/* Cakes and Pastries Section - Dark */}
       <CakesAndPastries />
 
-      {/* Foodstuffs Section - Light */}
+      {/* Foodstuffs Section - Light
       <FoodstuffsSection />
 
       {/* Fish Section - Dark */}
-      <FishSection />
+      {/* <FishSection />  */}
     </main>
   );
 }
